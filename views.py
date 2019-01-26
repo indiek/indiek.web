@@ -15,7 +15,8 @@ from .models import dbItem, dbTopic
 
 @login_required
 def home(request):
-    context = {'author': request.user}
+    context = {'author': request.user,
+            'page_title': 'User Home'}
     return render(request, 'indiek_web/home.html', context)
 
 
@@ -28,7 +29,7 @@ class ItemListView(ListView):
 
 
 class TopicListView(ListView):
-    model = dbItem
+    model = dbTopic
     template_name = ''
     context_object_name = ''
     ordering = ['-date_created']
@@ -40,6 +41,14 @@ class UserItemListView(ListView):
     template_name = 'indiek_web/user_items.html'
     context_object_name = 'items'
     paginate_by = 5
+    page_title = 'Your Items'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['page_title'] = self.page_title
+        return context
 
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
@@ -51,6 +60,14 @@ class UserTopicListView(ListView):
     template_name = 'indiek_web/user_topics.html'
     context_object_name = 'topics'
     paginate_by = 5
+    page_title = 'Your Topics'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['page_title'] = self.page_title
+        return context
 
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
@@ -64,18 +81,41 @@ class ItemDetailView(DetailView):
     model = dbItem
     template_name = 'indiek_web/item_detail.html'
 #    context_object_name = 'item'
+    page_title = 'Item Details'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['page_title'] = self.page_title
+        return context
 
 
 class TopicDetailView(DetailView):
     model = dbTopic
     template_name = 'indiek_web/topic_detail.html'
 #    context_object_name = 'topic'
+    page_title = 'Topic Details'
 
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['page_title'] = self.page_title
+        return context
 
 
 class ItemCreateView(LoginRequiredMixin, CreateView):
     model = dbItem
     fields = ['quickname', 'description', 'item_url']
+    page_title = 'Create Item'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['page_title'] = self.page_title
+        return context
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -85,6 +125,14 @@ class ItemCreateView(LoginRequiredMixin, CreateView):
 class TopicCreateView(LoginRequiredMixin, CreateView):
     model = dbTopic
     fields = ['name', 'description']
+    page_title = 'Create Topic'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['page_title'] = self.page_title
+        return context
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -94,6 +142,14 @@ class TopicCreateView(LoginRequiredMixin, CreateView):
 class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = dbItem
     fields = ['quickname', 'description', 'item_url']
+    page_title = 'Update Item'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['page_title'] = self.page_title
+        return context
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -107,8 +163,16 @@ class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 
 class TopicUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    model = dbItem
+    model = dbTopic
     fields = ['name', 'description']
+    page_title = 'Update Topic'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['page_title'] = self.page_title
+        return context
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -125,6 +189,14 @@ class ItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     
     model = dbItem
     success_url = '/'  # this redirects to home page on deletion of item
+    page_title = 'Delete Item'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['page_title'] = self.page_title
+        return context
 
     def test_func(self):
         post = self.get_object()
@@ -137,6 +209,14 @@ class TopicDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     
     model = dbTopic
     success_url = '/'  # this redirects to home page on deletion of topic
+    page_title = 'Delete Topic'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['page_title'] = self.page_title
+        return context
 
     def test_func(self):
         post = self.get_object()
