@@ -5,7 +5,7 @@
         <article class="media content-section">
           <div class="media-body">
             <div class="article-metadata">
-              <a class="mr-2" href="{% url 'user-items' item.author.username %}">{{ item.author }}</a>
+              <a class="mr-2" href="{% url 'profile' %}">{{ item.author }}</a>
               <small class="text-muted">{{ item.date_created|date:"F d, Y" }}</small>
             </div>
 	    <h4><a class="article-title" href={{ item.item_url }}>{{ item.quickname }}</a></h4>
