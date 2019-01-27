@@ -8,7 +8,7 @@
 		    <a class="mr-2" href="{% url 'profile' %}">{{ topic.author }}</a>
               <small class="text-muted">{{ topic.date_created|date:"F d, Y" }}</small>
             </div>
-	    <h2><a class="article-title" href="{% url 'topic-detail' topic.id %}">{{ topic.name }}</a></h2>
+	    <h4><a class="article-title" href="{% url 'topic-detail' topic.id %}">{{ topic.name }}</a></h4>
             <p class="article-content">{{ topic.description }}</p>
           </div>
         </article>
