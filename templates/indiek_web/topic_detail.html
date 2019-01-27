@@ -1,20 +1,36 @@
 {% extends "indiek_web/base.html" %}
 {% block content %}
-<article class="media content-section">
-	<div class="media-body">
-		<div class="article-metadata">
-			<a class="mr-2" href="{% url 'profile' %}">{{ object.author }}</a>
-			<small class="text-muted">{{ object.date_created|date:"F d, Y" }}</small>
-			{% if object.author == user %}
-			  <div>
-			    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'topic-update' object.id %}">Update</a>
-			    <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'topic-delete' object.id %}">Delete</a>
-			  </div>
-			{% endif %}
-		</div>
-		<h2 class="article-title">{{ object.name }}</h2>
-		<p class="article-content">{{ object.description }}</p>
-	</div>
-</article>
+  <article class="media content-section">
+    <div class="media-body">
+      <div class="article-metadata">
+        <a class="mr-2" href="{% url 'profile' %}">{{ object.author }}</a>
+        <small class="text-muted">{{ object.date_created|date:"F d, Y" }}</small>
+          {% if object.author == user %}
+	    <div>
+	      <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'topic-update' object.id %}">Update</a>
+	      <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'topic-delete' object.id %}">Delete</a>
+	    </div>
+	  {% endif %}
+      </div>
+        <h2 class="article-title">{{ object.name }}</h2>
+        <p class="article-content">{{ object.description }}</p>
+    </div>
+  </article>
+  <h3 class="mb-3">Items In Topic</h3>
+  {% for item in page.topic.dbitem_set.all %}
+    <article class="media content-section">
+      <div class="media-body">
+        <div class="article-metadata">
+          <a class="mr-2" href="{% url 'profile' %}">{{ item.author }}</a>
+          <small class="text-muted">{{ item.date_created|date:"F d, Y" }}</small>
+        </div>
+        <h4><a class="article-title" href={{ item.item_url }}>{{ item.quickname }}</a></h4>
+        <div>
+          <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'item-detail' item.id %}">Details</a>
+        </div>
+        <p class="article-content">{{ item.description }}</p>
+      </div>
+    </article>
+  {% endfor %}
 {% endblock content %}
 
