@@ -46,7 +46,6 @@ class UserItemListView(ListView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
         context['page_title'] = self.page_title
         return context
 
@@ -65,7 +64,6 @@ class UserTopicListView(ListView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
         context['page_title'] = self.page_title
         return context
 
@@ -86,7 +84,6 @@ class ItemDetailView(DetailView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
         context['page_title'] = self.page_title
         return context
 
@@ -100,7 +97,8 @@ class TopicDetailView(DetailView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
+        # Add in a QuerySet of all the items
+#        context['item_list'] = self.model.dbitem_set
         context['page_title'] = self.page_title
         return context
 
@@ -113,7 +111,6 @@ class ItemCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
         context['page_title'] = self.page_title
         return context
 
@@ -130,7 +127,6 @@ class TopicCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
         context['page_title'] = self.page_title
         return context
 
@@ -147,7 +143,6 @@ class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
         context['page_title'] = self.page_title
         return context
 
@@ -170,7 +165,6 @@ class TopicUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
         context['page_title'] = self.page_title
         return context
 
@@ -194,7 +188,6 @@ class ItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
         context['page_title'] = self.page_title
         return context
 
@@ -214,7 +207,6 @@ class TopicDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
         context['page_title'] = self.page_title
         return context
 
