@@ -32,8 +32,8 @@ class dbItem(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    children = models.ManyToManyField('self', symmetrical=False)
-    topics = models.ManyToManyField(dbTopic)
+    children = models.ManyToManyField('self', symmetrical=False, blank=True)
+    topics = models.ManyToManyField(dbTopic, blank=True, limit_choices_to={'author': self.author})
 
     def __str__(self):
         return self.quickname

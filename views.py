@@ -19,22 +19,6 @@ def home(request):
             'page_title': 'ik - User Home'}
     return render(request, 'indiek_web/home.html', context)
 
-'''
-class ItemListView(ListView):
-    model = dbItem
-    template_name = ''
-    context_object_name = ''
-    ordering = ['-date_created']
-    paginate_by = 5
-
-
-class TopicListView(ListView):
-    model = dbTopic
-    template_name = ''
-    context_object_name = ''
-    ordering = ['-date_created']
-    paginate_by = 5
-'''
 
 class UserItemListView(LoginRequiredMixin, ListView):
     model = dbItem
@@ -78,7 +62,6 @@ class UserTopicListView(LoginRequiredMixin, ListView):
 class ItemDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = dbItem
     template_name = 'indiek_web/item_detail.html'
-#    context_object_name = 'item'
     page_title = 'ik - Item Details'
 
     def get_context_data(self, **kwargs):
@@ -97,14 +80,11 @@ class ItemDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 class TopicDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = dbTopic
     template_name = 'indiek_web/topic_detail.html'
-#    context_object_name = 'topic'
     page_title = 'ik - Topic Details'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the items
-#        context['item_list'] = self.model.dbitem_set
         context['page_title'] = self.page_title
         return context
 
@@ -117,7 +97,7 @@ class TopicDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
 class ItemCreateView(LoginRequiredMixin, CreateView):
     model = dbItem
-    fields = ['quickname', 'description', 'item_url']
+    fields = ['quickname', 'description', 'item_url', 'topics']
     page_title = 'ik - Create Item'
 
     def get_context_data(self, **kwargs):
@@ -128,6 +108,7 @@ class ItemCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+        # todo: Here check that requested topics are admissible
         return super().form_valid(form)
 
 
@@ -149,7 +130,7 @@ class TopicCreateView(LoginRequiredMixin, CreateView):
 
 class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = dbItem
-    fields = ['quickname', 'description', 'item_url']
+    fields = ['quickname', 'description', 'item_url', 'topics']
     page_title = 'ik - Update Item'
 
     def get_context_data(self, **kwargs):
@@ -160,6 +141,7 @@ class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+        # todo: Here check that requested topics are admissible
         return super().form_valid(form)
 
     def test_func(self):
@@ -194,7 +176,7 @@ class TopicUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 class ItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     
     model = dbItem
-    success_url = '/'  # this redirects to home page on deletion of item
+    success_url = '/'  # todo: is this okay? Should I rather do success_url = reverse_lazy('user-home')?
     page_title = 'ik - Delete Item'
 
     def get_context_data(self, **kwargs):
@@ -213,7 +195,7 @@ class ItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 class TopicDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     
     model = dbTopic
-    success_url = '/'  # this redirects to home page on deletion of topic
+    success_url = '/'  # todo: is this ok?
     page_title = 'ik - Delete Topic'
 
     def get_context_data(self, **kwargs):
