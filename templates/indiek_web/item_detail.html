@@ -1,23 +1,38 @@
 {% extends "indiek_web/base.html" %}
 {% block content %}
-<article class="media content-section">
-  <div class="media-body">
-    <div class="article-metadata">
-      <a class="mr-2" href="{% url 'profile' %}">{{ object.author }}</a>
-      <small class="text-muted">{{ object.date_created|date:"F d, Y" }}</small>
+  <article class="media content-section">
+    <div class="media-body">
+      <div class="article-metadata">
+        <a class="mr-2" href="{% url 'profile' %}">{{ object.author }}</a>
+        <small class="text-muted">{{ object.date_created|date:"F d, Y" }}</small>
+  
+        {% if object.author == user %}
+          <div>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'item-update' object.id %}">Update</a>
+            <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'item-delete' object.id %}">Delete</a>
+          </div>
+        {% endif %}
 
-      {% if object.author == user %}
-        <div>
-          <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'item-update' object.id %}">Update</a>
-          <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'item-delete' object.id %}">Delete</a>
-        </div>
-      {% endif %}
-
+      </div>
+      <h2 class="article-title">{{ object.quickname }}</h2>
+      <a href={{ object.item_url }}>Go to URL</a>
+      <p class="article-content">{{ object.description }}</p>
     </div>
-    <h2 class="article-title">{{ object.quickname }}</h2>
-    <a href={{ object.item_url }}>Go to URL</a>
-    <p class="article-content">{{ object.description }}</p>
-  </div>
-</article>
+  </article>
+
+  <h3 class="mb-3">In Topics</h3>
+  {% for topic in object.topics.all %}
+    <article class="media content-section">
+      <div class="media-body">
+        <div class="article-metadata">
+          <a class="mr-2" href="{% url 'profile' %}">{{ topic.author }}</a>
+          <small class="text-muted">{{ topic.date_created|date:"F d, Y" }}</small>
+        </div>
+        <h4><a class="article-title" href="{% url 'topic-detail' topic.id %}">{{ topic.name }}</a></h4>
+        <p class="article-content">{{ topic.description }}</p>
+      </div>
+    </article>
+  {% endfor %}
+
 {% endblock content %}
 

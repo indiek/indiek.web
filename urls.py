@@ -1,12 +1,12 @@
 from django.urls import path
 from .views import (
-        ItemListView, 
+#        ItemListView, 
         ItemDetailView,
         ItemCreateView,
         ItemUpdateView,
         ItemDeleteView,
         UserItemListView,
-        TopicListView, 
+#        TopicListView, 
         TopicDetailView,
         TopicCreateView,
         TopicUpdateView,

@@ -16,10 +16,10 @@ from .models import dbItem, dbTopic
 @login_required
 def home(request):
     context = {'author': request.user,
-            'page_title': 'User Home'}
+            'page_title': 'ik - User Home'}
     return render(request, 'indiek_web/home.html', context)
 
-
+'''
 class ItemListView(ListView):
     model = dbItem
     template_name = ''
@@ -34,14 +34,14 @@ class TopicListView(ListView):
     context_object_name = ''
     ordering = ['-date_created']
     paginate_by = 5
+'''
 
-
-class UserItemListView(ListView):
+class UserItemListView(LoginRequiredMixin, ListView):
     model = dbItem
     template_name = 'indiek_web/user_items.html'
     context_object_name = 'items'
     paginate_by = 5
-    page_title = 'Your Items'
+    page_title = 'ik - Your Items'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -51,15 +51,15 @@ class UserItemListView(ListView):
 
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
-        return dbItem.objects.filter(author=user).order_by('-date_created')
+        return dbItem.objects.filter(author=user).order_by('-last_modified')
 
 
-class UserTopicListView(ListView):
+class UserTopicListView(LoginRequiredMixin, ListView):
     model = dbTopic
     template_name = 'indiek_web/user_topics.html'
     context_object_name = 'topics'
     paginate_by = 5
-    page_title = 'Your Topics'
+    page_title = 'ik - Your Topics'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -69,17 +69,17 @@ class UserTopicListView(ListView):
 
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
-        return dbTopic.objects.filter(author=user).order_by('-date_created')
+        return dbTopic.objects.filter(author=user).order_by('-last_modified')
 
 
 # note, for the class below, Django by default looks for 
 # a template with name <app>/<model>_<view_type>.html
 # but I decided to override it with template_name attribute
-class ItemDetailView(DetailView):
+class ItemDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = dbItem
     template_name = 'indiek_web/item_detail.html'
 #    context_object_name = 'item'
-    page_title = 'Item Details'
+    page_title = 'ik - Item Details'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -87,12 +87,18 @@ class ItemDetailView(DetailView):
         context['page_title'] = self.page_title
         return context
 
+    def test_func(self):
+        dbitem = self.get_object()
+        if self.request.user == dbitem.author:
+            return True
+        return False
 
-class TopicDetailView(DetailView):
+
+class TopicDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = dbTopic
     template_name = 'indiek_web/topic_detail.html'
 #    context_object_name = 'topic'
-    page_title = 'Topic Details'
+    page_title = 'ik - Topic Details'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -102,11 +108,17 @@ class TopicDetailView(DetailView):
         context['page_title'] = self.page_title
         return context
 
+    def test_func(self):
+        dbtopic = self.get_object()
+        if self.request.user == dbtopic.author:
+            return True
+        return False
+
 
 class ItemCreateView(LoginRequiredMixin, CreateView):
     model = dbItem
     fields = ['quickname', 'description', 'item_url']
-    page_title = 'Create Item'
+    page_title = 'ik - Create Item'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -122,7 +134,7 @@ class ItemCreateView(LoginRequiredMixin, CreateView):
 class TopicCreateView(LoginRequiredMixin, CreateView):
     model = dbTopic
     fields = ['name', 'description']
-    page_title = 'Create Topic'
+    page_title = 'ik - Create Topic'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -138,7 +150,7 @@ class TopicCreateView(LoginRequiredMixin, CreateView):
 class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = dbItem
     fields = ['quickname', 'description', 'item_url']
-    page_title = 'Update Item'
+    page_title = 'ik - Update Item'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -151,8 +163,8 @@ class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return super().form_valid(form)
 
     def test_func(self):
-        post = self.get_object()
-        if self.request.user == post.author:
+        dbitem = self.get_object()
+        if self.request.user == dbitem.author:
             return True
         return False
 
@@ -160,7 +172,7 @@ class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 class TopicUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = dbTopic
     fields = ['name', 'description']
-    page_title = 'Update Topic'
+    page_title = 'ik - Update Topic'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -173,8 +185,8 @@ class TopicUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return super().form_valid(form)
 
     def test_func(self):
-        post = self.get_object()
-        if self.request.user == post.author:
+        dbtopic = self.get_object()
+        if self.request.user == dbtopic.author:
             return True
         return False
 
@@ -183,7 +195,7 @@ class ItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     
     model = dbItem
     success_url = '/'  # this redirects to home page on deletion of item
-    page_title = 'Delete Item'
+    page_title = 'ik - Delete Item'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -192,8 +204,8 @@ class ItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return context
 
     def test_func(self):
-        post = self.get_object()
-        if self.request.user == post.author:
+        dbitem = self.get_object()
+        if self.request.user == dbitem.author:
             return True
         return False
 
@@ -202,7 +214,7 @@ class TopicDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     
     model = dbTopic
     success_url = '/'  # this redirects to home page on deletion of topic
-    page_title = 'Delete Topic'
+    page_title = 'ik - Delete Topic'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -211,7 +223,7 @@ class TopicDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return context
 
     def test_func(self):
-        post = self.get_object()
-        if self.request.user == post.author:
+        dbtopic = self.get_object()
+        if self.request.user == dbtopic.author:
             return True
         return False
