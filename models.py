@@ -33,13 +33,10 @@ class dbItem(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     children = models.ManyToManyField('self', symmetrical=False, blank=True)
-    topics = models.ManyToManyField(dbTopic, blank=True, limit_choices_to={'author': self.author})
+    topics = models.ManyToManyField(dbTopic, blank=True)
 
     def __str__(self):
         return self.quickname
 
     def get_absolute_url(self):
         return reverse('item-detail', kwargs={'pk': self.pk}) # returns the full path as a string
-
-
-

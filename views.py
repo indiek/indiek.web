@@ -11,7 +11,7 @@ from django.views.generic import (
         DeleteView
         )
 from .models import dbItem, dbTopic
-
+from .forms import ItemForm
 
 @login_required
 def home(request):
@@ -99,7 +99,8 @@ class ItemCreateView(LoginRequiredMixin, CreateView):
     model = dbItem
     fields = ['quickname', 'description', 'item_url', 'topics']
     page_title = 'ik - Create Item'
-
+    form_class = ItemForm
+    
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
@@ -110,6 +111,11 @@ class ItemCreateView(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
         # todo: Here check that requested topics are admissible
         return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super(ItemCreateView, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
 
 
 class TopicCreateView(LoginRequiredMixin, CreateView):
@@ -132,6 +138,7 @@ class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = dbItem
     fields = ['quickname', 'description', 'item_url', 'topics']
     page_title = 'ik - Update Item'
+    form_class = itemForm
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
