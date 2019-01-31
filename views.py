@@ -97,7 +97,7 @@ class TopicDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
 class ItemCreateView(LoginRequiredMixin, CreateView):
     model = dbItem
-    fields = ['quickname', 'description', 'item_url', 'topics']
+#    fields = ['quickname', 'description', 'item_url', 'topics']
     page_title = 'ik - Create Item'
     form_class = ItemForm
     
@@ -138,7 +138,7 @@ class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = dbItem
     fields = ['quickname', 'description', 'item_url', 'topics']
     page_title = 'ik - Update Item'
-    form_class = itemForm
+    #form_class = itemForm
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
