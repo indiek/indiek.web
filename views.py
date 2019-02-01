@@ -136,9 +136,9 @@ class TopicCreateView(LoginRequiredMixin, CreateView):
 
 class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = dbItem
-    fields = ['quickname', 'description', 'item_url', 'topics']
+#    fields = ['quickname', 'description', 'item_url', 'topics']
     page_title = 'ik - Update Item'
-    #form_class = itemForm
+    form_class = ItemForm
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -156,6 +156,11 @@ class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         if self.request.user == dbitem.author:
             return True
         return False
+    
+    def get_form_kwargs(self):
+        kwargs = super(ItemUpdateView, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
 
 
 class TopicUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
