@@ -1,0 +1,11 @@
+{% extends "indiek_web/base.html" %}
+{% block content %}
+  <article class="media content-section">
+    <div class="media-body">
+      <ul>
+        <li><a class="mr-2" href="{% url 'user-items' author.username %}">Go to your items</a></li>
+	<li><a class="mr-2" href="{% url 'user-topics' author.username %}">Go to your topics</a></li>
+      </ul>
+    </div>
+  </article>
+{% endblock content %}
